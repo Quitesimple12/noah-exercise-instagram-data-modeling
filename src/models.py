@@ -1,32 +1,43 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+class User(Base):
+    __tablename__ = 'user'
+    userid = Column(Integer, primary_key=True)
+    firstname = Column(String(250), nullable=False)
+    lastname = Column(String(250), nullable=False)
+    username = Column(String(250), nullable=False)
+    password = Column(String(250), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+class Post(Base):
+    __tablename__ = 'post'
+    postid = Column(Integer, primary_key = True)
+    postdesc = Column(String(1000), nullable=False)
+    postpicid = Column(Integer, primary_key= True)
+    userid = Column(Integer, ForeignKey('user.userid'))
+    
 
     def to_dict(self):
         return {}
+
+class Comment(Base):
+    __tablename__ = 'comment'
+    commentid = Column(Integer, primary_key=True)
+    commenttext = Column(String(250), nullable=False)
+    username = Column(String(250), nullable=False)
+    postid = Column(Integer, ForeignKey('post.postid'))
+
+class Follow(Base):
+    __tablename__ = 'profile'
+    followid = Column(Integer, primary_key=True)
+    userid = Column(Integer, ForeignKey('user.userid'))
+    isfollowed = Column(Boolean, default = False)
 
 ## Draw from SQLAlchemy base
 try:
